@@ -20,8 +20,8 @@ for iter = 1:num_iters
     newtheta1 = theta(1) - alpha*1/m * sum(X * theta - y);
     newtheta2 = theta(2) - alpha*1/m * sum((X * theta - y).*X(:,2));
 
-   theta(1) = newtheta1;
-   theta(2) = newtheta2;
+    theta(1) = newtheta1;
+    theta(2) = newtheta2;
 
 
     % ============================================================

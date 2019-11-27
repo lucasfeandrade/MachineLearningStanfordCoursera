@@ -60,24 +60,29 @@ Theta2_grad = zeros(size(Theta2));
 %               backpropagation. That is, you can compute the gradients for
 %               the regularization separately and then add them to Theta1_grad
 %               and Theta2_grad from Part 2.
-%
 
 
 
+  X = [ones(rows(X), 1) X];
+  z2 = Theta1*X';
+  a2 = sigmoid(z2)';
+  a2 = [ones(rows(a2),1) a2];
+  z3 = Theta2*a2';
+  hTheta = sigmoid(z3);
+  numLabels = size(hTheta, 1);
+  
+  yNew = eye(num_labels)(y,:); %Creating a matrix where each row of yNew is a vector with value of 1 in the index corresponding to y 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+%  for i = 1:m
+%    y(i)
+%    yZeros(i, y(i)) = 1;
+%  endfor
+%  for k = 1:numLabels
+    % Cost function
+    % First sum sums each column in a vector of 1 column, second sum represents the sum of all rows
+    J = sum(sum(1/m*(-yNew'.*log(hTheta)-(1-yNew)'.*log(1-hTheta)), 2)); 
+    
+%  endfor
 
 
 % -------------------------------------------------------------

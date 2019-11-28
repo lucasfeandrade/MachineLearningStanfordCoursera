@@ -62,29 +62,45 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 
 
-
-  X = [ones(rows(X), 1) X];
-  z2 = Theta1*X';
+  %Part 1 Feedforward without regularization
+  a1 = [ones(rows(X), 1) X];
+  z2 = Theta1*a1';
   a2 = sigmoid(z2)';
   a2 = [ones(rows(a2),1) a2];
   z3 = Theta2*a2';
-  hTheta = sigmoid(z3);
+  a3 = sigmoid(z3);
+  hTheta = a3; %This line is just for naming
   numLabels = size(hTheta, 1);
   
-  yNew = eye(num_labels)(y,:); %Creating a matrix where each row of yNew is a vector with value of 1 in the index corresponding to y 
+  yNew = eye(num_labels)(y,:); %Creating a matrix where each row of yNew is
+                               %a vector with value of 1 in the index corresponding to y 
 
-%  for i = 1:m
-%    y(i)
-%    yZeros(i, y(i)) = 1;
-%  endfor
-%  for k = 1:numLabels
-    % Cost function
-    % First sum sums each column in a vector of 1 column, second sum represents the sum of all rows
-    J = sum(sum(1/m*(-yNew'.*log(hTheta)-(1-yNew)'.*log(1-hTheta)), 2)); 
-    
-%  endfor
+  % Cost function
+  % First sum sums each column in a vector of 1 column, second sum represents the sum of all rows
+  J = sum(sum(1/m*(-yNew'.*log(hTheta)-(1-yNew)'.*log(1-hTheta)), 2)); 
 
+  %Part 1.1 Adding regularization to the cost 
+  
+  Theta1NoBias = Theta1(:, 2:end);
+  Theta2NoBias = Theta2(:, 2:end);
+  Regularization = lambda/(2*m)*(sum(sum(Theta1NoBias.^2, 2)) + sum(sum(Theta2NoBias.^2, 2)));
 
+  J = J + Regularization;
+  
+  %Part 2 Backpropagation
+  
+  delta3 = a3 .- yNew';
+  delta2 = (Theta2'*delta3)(2:end,:).*sigmoidGradient(z2);
+  
+  Theta2_grad = 1/m*delta3*a2;
+  Theta1_grad = 1/m*delta2*a1;
+  
+  Theta1NoBias = [zeros(rows(Theta1NoBias), 1) Theta1NoBias]; %adding column of zeros
+  Theta2NoBias = [zeros(rows(Theta2NoBias), 1) Theta2NoBias];
+  
+  Theta1_grad = Theta1_grad + lambda/m*Theta1NoBias; %Regularization term
+  Theta2_grad = Theta2_grad + lambda/m*Theta2NoBias;
+  
 % -------------------------------------------------------------
 
 % =========================================================================
